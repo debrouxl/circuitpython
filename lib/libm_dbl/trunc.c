@@ -13,7 +13,7 @@ double trunc(double x)
 	m = -1ULL >> e;
 	if ((u.i & m) == 0)
 		return x;
-	FORCE_EVAL(x + 0x1p120f);
+	FORCE_EVAL(x + 0x1p120);
 	u.i &= ~m;
 	return u.f;
 }
