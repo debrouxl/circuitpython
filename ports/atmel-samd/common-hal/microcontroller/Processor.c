@@ -74,8 +74,8 @@
 
 
 // Decimal to fraction conversion. (adapted from ASF sample).
-STATIC float convert_dec_to_frac(uint8_t val) {
-    float float_val = (float)val;
+STATIC mp_float_t convert_dec_to_frac(uint8_t val) {
+    mp_float_t float_val = (mp_float_t)val;
     if (val < 10) {
         return (float_val/10.0);
     } else if (val < 100) {
@@ -88,7 +88,7 @@ STATIC float convert_dec_to_frac(uint8_t val) {
 // Extract the production calibration data information from NVM (adapted from ASF sample),
 // then calculate the temperature
 #ifdef SAMD21
-STATIC float calculate_temperature(uint16_t raw_value) {
+STATIC mp_float_t calculate_temperature(uint16_t raw_value) {
     volatile uint32_t val1;    /* Temperature Log Row Content first 32 bits */
     volatile uint32_t val2;    /* Temperature Log Row Content another 32 bits */
     uint8_t room_temp_val_int; /* Integer part of room temperature in °C */
@@ -98,14 +98,14 @@ STATIC float calculate_temperature(uint16_t raw_value) {
     int8_t room_int1v_val;     /* internal 1V reference drift at room temperature */
     int8_t hot_int1v_val;      /* internal 1V reference drift at hot temperature*/
 
-    float tempR;       // Production Room temperature
-    float tempH;       // Production Hot temperature
-    float INT1VR;      // Room temp 2's complement of the internal 1V reference value
-    float INT1VH;      // Hot temp 2's complement of the internal 1V reference value
+    mp_float_t tempR;       // Production Room temperature
+    mp_float_t tempH;       // Production Hot temperature
+    mp_float_t INT1VR;      // Room temp 2's complement of the internal 1V reference value
+    mp_float_t INT1VH;      // Hot temp 2's complement of the internal 1V reference value
     uint16_t ADCR;     // Production Room temperature ADC value
     uint16_t ADCH;     // Production Hot temperature ADC value
-    float VADCR;       // Room temperature ADC voltage
-    float VADCH;       // Hot temperature ADC voltage
+    mp_float_t VADCR;       // Room temperature ADC voltage
+    mp_float_t VADCH;       // Hot temperature ADC voltage
 
     uint32_t *temp_log_row_ptr = (uint32_t *)NVMCTRL_TEMP_LOG;
 
@@ -128,17 +128,17 @@ STATIC float calculate_temperature(uint16_t raw_value) {
     tempR = room_temp_val_int + convert_dec_to_frac(room_temp_val_dec);
     tempH = hot_temp_val_int + convert_dec_to_frac(hot_temp_val_dec);
 
-    INT1VR = 1 - ((float)room_int1v_val/INT1V_DIVIDER_1000);
-    INT1VH = 1 - ((float)hot_int1v_val/INT1V_DIVIDER_1000);
+    INT1VR = 1 - ((mp_float_t)room_int1v_val/INT1V_DIVIDER_1000);
+    INT1VH = 1 - ((mp_float_t)hot_int1v_val/INT1V_DIVIDER_1000);
 
-    VADCR = ((float)ADCR * INT1VR)/ADC_12BIT_FULL_SCALE_VALUE_FLOAT;
-    VADCH = ((float)ADCH * INT1VH)/ADC_12BIT_FULL_SCALE_VALUE_FLOAT;
+    VADCR = ((mp_float_t)ADCR * INT1VR)/ADC_12BIT_FULL_SCALE_VALUE_FLOAT;
+    VADCH = ((mp_float_t)ADCH * INT1VH)/ADC_12BIT_FULL_SCALE_VALUE_FLOAT;
 
-    float VADC;      /* Voltage calculation using ADC result for Coarse Temp calculation */
-    float VADCM;     /* Voltage calculation using ADC result for Fine Temp calculation. */
-    float INT1VM;    /* Voltage calculation for reality INT1V value during the ADC conversion */
+    mp_float_t VADC;      /* Voltage calculation using ADC result for Coarse Temp calculation */
+    mp_float_t VADCM;     /* Voltage calculation using ADC result for Fine Temp calculation. */
+    mp_float_t INT1VM;    /* Voltage calculation for reality INT1V value during the ADC conversion */
 
-    VADC = ((float)raw_value * INT1V_VALUE_FLOAT)/ADC_12BIT_FULL_SCALE_VALUE_FLOAT;
+    VADC = ((mp_float_t)raw_value * INT1V_VALUE_FLOAT)/ADC_12BIT_FULL_SCALE_VALUE_FLOAT;
 
     // Hopefully compiler will remove common subepxressions here.
 
@@ -146,29 +146,29 @@ STATIC float calculate_temperature(uint16_t raw_value) {
     // 1b as mentioned in data sheet section "Temperature Sensor Characteristics"
     // of Electrical Characteristics. (adapted from ASF sample code).
     // Coarse Temp Calculation by assume INT1V=1V for this ADC conversion
-    float coarse_temp = tempR + (((tempH - tempR)/(VADCH - VADCR)) * (VADC - VADCR));
+    mp_float_t coarse_temp = tempR + (((tempH - tempR)/(VADCH - VADCR)) * (VADC - VADCR));
 
     // Calculation to find the real INT1V value during the ADC conversion
     INT1VM = INT1VR + (((INT1VH - INT1VR) * (coarse_temp - tempR))/(tempH - tempR));
 
-    VADCM = ((float)raw_value * INT1VM)/ADC_12BIT_FULL_SCALE_VALUE_FLOAT;
+    VADCM = ((mp_float_t)raw_value * INT1VM)/ADC_12BIT_FULL_SCALE_VALUE_FLOAT;
 
     // Fine Temp Calculation by replace INT1V=1V by INT1V = INT1Vm for ADC conversion
-    float fine_temp = tempR + (((tempH - tempR)/(VADCH - VADCR)) * (VADCM - VADCR));
+    mp_float_t fine_temp = tempR + (((tempH - tempR)/(VADCH - VADCR)) * (VADCM - VADCR));
 
     return fine_temp;
 }
 #endif // SAMD21
 
 #ifdef SAMD51
-STATIC float calculate_temperature(uint16_t TP, uint16_t TC) {
+STATIC mp_float_t calculate_temperature(uint16_t TP, uint16_t TC) {
     uint32_t TLI = (*(uint32_t *)FUSES_ROOM_TEMP_VAL_INT_ADDR & FUSES_ROOM_TEMP_VAL_INT_Msk) >> FUSES_ROOM_TEMP_VAL_INT_Pos;
     uint32_t TLD = (*(uint32_t *)FUSES_ROOM_TEMP_VAL_DEC_ADDR & FUSES_ROOM_TEMP_VAL_DEC_Msk) >> FUSES_ROOM_TEMP_VAL_DEC_Pos;
-    float TL = TLI + convert_dec_to_frac(TLD);
+    mp_float_t TL = TLI + convert_dec_to_frac(TLD);
 
     uint32_t THI = (*(uint32_t *)FUSES_HOT_TEMP_VAL_INT_ADDR & FUSES_HOT_TEMP_VAL_INT_Msk) >> FUSES_HOT_TEMP_VAL_INT_Pos;
     uint32_t THD = (*(uint32_t *)FUSES_HOT_TEMP_VAL_DEC_ADDR & FUSES_HOT_TEMP_VAL_DEC_Msk) >> FUSES_HOT_TEMP_VAL_DEC_Pos;
-    float TH = THI + convert_dec_to_frac(THD);
+    mp_float_t TH = THI + convert_dec_to_frac(THD);
 
     uint16_t VPL = (*(uint32_t *)FUSES_ROOM_ADC_VAL_PTAT_ADDR & FUSES_ROOM_ADC_VAL_PTAT_Msk) >> FUSES_ROOM_ADC_VAL_PTAT_Pos;
     uint16_t VPH = (*(uint32_t *)FUSES_HOT_ADC_VAL_PTAT_ADDR & FUSES_HOT_ADC_VAL_PTAT_Msk) >> FUSES_HOT_ADC_VAL_PTAT_Pos;
@@ -181,7 +181,7 @@ STATIC float calculate_temperature(uint16_t TP, uint16_t TC) {
 }
 #endif // SAMD51
 
-float common_hal_mcu_processor_get_temperature(void) {
+mp_float_t common_hal_mcu_processor_get_temperature(void) {
     struct adc_sync_descriptor adc;
 
     static Adc* adc_insts[] = ADC_INSTS;

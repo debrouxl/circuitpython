@@ -229,7 +229,9 @@ bool run_code_py(safe_mode_t safe_mode) {
         supervisor_move_memory();
 
         reset_port();
+        #if CIRCUITPY_BOARD
         reset_board_busses();
+        #endif
         reset_board();
         reset_status_led();
 
