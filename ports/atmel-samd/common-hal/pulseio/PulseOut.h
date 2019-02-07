@@ -38,6 +38,6 @@ typedef struct {
 } pulseio_pulseout_obj_t;
 
 void pulseout_reset(void);
-void pulseout_interrupt_handler(uint8_t index);
+static inline void pulseout_interrupt_handler(uint8_t index) {}
 
 #endif // MICROPY_INCLUDED_ATMEL_SAMD_COMMON_HAL_PULSEIO_PULSEOUT_H

@@ -118,7 +118,7 @@ else
   ifdef CFLAGS_INLINE_LIMIT
     CFLAGS += -finline-limit=$(CFLAGS_INLINE_LIMIT)
   endif
-  CFLAGS += -flto
+  CFLAGS += -flto -frename-registers -fmerge-all-constants
 endif
 
 CFLAGS += $(INC) -Wall -Werror -std=gnu11 -nostdlib $(BASE_CFLAGS) $(CFLAGS_MOD) $(COPT)

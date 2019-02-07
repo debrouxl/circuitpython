@@ -243,6 +243,10 @@ double erf(double x)
 
 double erfc(double x)
 {
+#if 1
+	// The full implementation is relatively costly in terms of space, and for high school math teaching purposes, we're unlikely to need the high accuracy offered the full implementation.
+	return 1. - erf(x);
+#else
 	double r,s,z,y;
 	uint32_t ix;
 	int sign;
@@ -270,4 +274,5 @@ double erfc(double x)
 		return sign ? 2 - erfc2(ix,x) : erfc2(ix,x);
 	}
 	return sign ? 2 - 0x1p-1022 : 0x1p-1022*0x1p-1022;
+#endif
 }

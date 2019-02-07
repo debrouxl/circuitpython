@@ -45,7 +45,7 @@ bool stack_ok_so_far = true;
 void run_background_tasks(void) {
     assert_heap_ok();
     #if (defined(SAMD21) && defined(PIN_PA02)) || defined(SAMD51)
-    audio_dma_background();
+    //audio_dma_background();
     #endif
     #if CIRCUITPY_DISPLAYIO
     displayio_refresh_displays();
