@@ -77,7 +77,7 @@ double asin(double x)
 		GET_LOW_WORD(lx, x);
 		if (((ix-0x3ff00000) | lx) == 0)
 			/* asin(1) = +-pi/2 with inexact */
-			return x*pio2_hi + 0x1p-120f;
+			return x*pio2_hi + 0x1p-120;
 		return 0/(x-x);
 	}
 	/* |x| < 0.5 */
