@@ -72,7 +72,7 @@ double atan(double x)
 	if (ix >= 0x44100000) {   /* if |x| >= 2^66 */
 		if (isnan(x))
 			return x;
-		z = atanhi[3] + 0x1p-120f;
+		z = atanhi[3] + 0x1p-120;
 		return sign ? -z : z;
 	}
 	if (ix < 0x3fdc0000) {    /* |x| < 0.4375 */

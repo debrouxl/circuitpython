@@ -55,7 +55,7 @@ double cos(double x)
 	if (ix <= 0x3fe921fb) {
 		if (ix < 0x3e46a09e) {  /* |x| < 2**-27 * sqrt(2) */
 			/* raise inexact if x!=0 */
-			FORCE_EVAL(x + 0x1p120f);
+			FORCE_EVAL(x + 0x1p120);
 			return 1.0;
 		}
 		return __cos(x, 0);

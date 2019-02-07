@@ -19,7 +19,7 @@ double cosh(double x)
 	if (w < 0x3fe62e42) {
 		if (w < 0x3ff00000 - (26<<20)) {
 			/* raise inexact if x!=0 */
-			FORCE_EVAL(x + 0x1p120f);
+			FORCE_EVAL(x + 0x1p120);
 			return 1;
 		}
 		t = expm1(x);
