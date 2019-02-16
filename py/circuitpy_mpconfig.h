@@ -356,12 +356,12 @@ extern const struct _mp_obj_module_t nvm_module;
 #endif
 
 #if CIRCUITPY_OS
+#define OS_MODULE
+#define OS_MODULE_ALT_NAME
+#else
 extern const struct _mp_obj_module_t os_module;
 #define OS_MODULE              { MP_OBJ_NEW_QSTR(MP_QSTR_os), (mp_obj_t)&os_module },
 #define OS_MODULE_ALT_NAME     { MP_OBJ_NEW_QSTR(MP_QSTR__os), (mp_obj_t)&os_module },
-#else
-#define OS_MODULE
-#define OS_MODULE_ALT_NAME
 #endif
 
 #if CIRCUITPY_PIXELBUF
