@@ -153,107 +153,107 @@ hid_max_report_length = max(hid_report_lengths_dict.values())
 
 # ASF4 expects keyboard and generic devices to have both in and out endpoints,
 # and will fail (possibly silently) if both are not supplied.
-hid_endpoint_in_descriptor = standard.EndpointDescriptor(
-    description="HID in",
-    bEndpointAddress=0x0 | standard.EndpointDescriptor.DIRECTION_IN,
-    bmAttributes=standard.EndpointDescriptor.TYPE_INTERRUPT,
-    bInterval=10)
-
-hid_interfaces = [
-    standard.InterfaceDescriptor(
-        description="HID Multiple Devices",
-        bInterfaceClass=hid.HID_CLASS,
-        bInterfaceSubClass=hid.HID_SUBCLASS_NOBOOT,
-        bInterfaceProtocol=hid.HID_PROTOCOL_NONE,
-        iInterface=StringIndex.index("CircuitPython HID"),
-        subdescriptors=[
-            hid.HIDDescriptor(
-                description="HID",
-                wDescriptorLength=len(bytes(combined_hid_report_descriptor))),
-            hid_endpoint_in_descriptor,
-            ]
-        ),
-    ]
+#hid_endpoint_in_descriptor = standard.EndpointDescriptor(
+#    description="HID in",
+#    bEndpointAddress=0x0 | standard.EndpointDescriptor.DIRECTION_IN,
+#    bmAttributes=standard.EndpointDescriptor.TYPE_INTERRUPT,
+#    bInterval=10)
+#
+#hid_interfaces = [
+#    standard.InterfaceDescriptor(
+#        description="HID Multiple Devices",
+#        bInterfaceClass=hid.HID_CLASS,
+#        bInterfaceSubClass=hid.HID_SUBCLASS_NOBOOT,
+#        bInterfaceProtocol=hid.HID_PROTOCOL_NONE,
+#        iInterface=StringIndex.index("CircuitPython HID"),
+#        subdescriptors=[
+#            hid.HIDDescriptor(
+#                description="HID",
+#                wDescriptorLength=len(bytes(combined_hid_report_descriptor))),
+#            hid_endpoint_in_descriptor,
+#            ]
+#        ),
+#    ]
 
 # Audio!
 # In and out here are relative to CircuitPython
 
 # USB OUT -> midi_in_jack_emb -> midi_out_jack_ext -> CircuitPython
-midi_in_jack_emb = midi.InJackDescriptor(
-    description="MIDI PC -> CircuitPython",
-    bJackType=midi.JACK_TYPE_EMBEDDED,
-    iJack=StringIndex.index("CircuitPython usb_midi.ports[0]"))
-midi_out_jack_ext = midi.OutJackDescriptor(
-                    description="MIDI data out to user code.",
-                    bJackType=midi.JACK_TYPE_EXTERNAL,
-                    input_pins=[(midi_in_jack_emb, 1)],
-                    iJack=0)
+#midi_in_jack_emb = midi.InJackDescriptor(
+#    description="MIDI PC -> CircuitPython",
+#    bJackType=midi.JACK_TYPE_EMBEDDED,
+#    iJack=StringIndex.index("CircuitPython usb_midi.ports[0]"))
+#midi_out_jack_ext = midi.OutJackDescriptor(
+#                    description="MIDI data out to user code.",
+#                    bJackType=midi.JACK_TYPE_EXTERNAL,
+#                    input_pins=[(midi_in_jack_emb, 1)],
+#                    iJack=0)
 
 # USB IN <- midi_out_jack_emb <- midi_in_jack_ext <- CircuitPython
-midi_in_jack_ext = midi.InJackDescriptor(
-                    description="MIDI data in from user code.",
-                    bJackType=midi.JACK_TYPE_EXTERNAL,
-                    iJack=0)
-midi_out_jack_emb = midi.OutJackDescriptor(
-    description="MIDI PC <- CircuitPython",
-    bJackType=midi.JACK_TYPE_EMBEDDED,
-    input_pins=[(midi_in_jack_ext, 1)],
-    iJack=StringIndex.index("CircuitPython usb_midi.ports[1]"))
-
-
-audio_midi_interface = standard.InterfaceDescriptor(
-    description="Midi goodness",
-    bInterfaceClass=audio.AUDIO_CLASS_DEVICE,
-    bInterfaceSubClass=audio.AUDIO_SUBCLASS_MIDI_STREAMING,
-    bInterfaceProtocol=audio.AUDIO_PROTOCOL_V1,
-    iInterface=StringIndex.index("CircuitPython MIDI"),
-    subdescriptors=[
-        midi.Header(
-            jacks_and_elements=[
-                midi_in_jack_emb,
-                midi_in_jack_ext,
-                midi_out_jack_emb,
-                midi_out_jack_ext
-            ],
-        ),
-        standard.EndpointDescriptor(
-            description="MIDI data out to CircuitPython",
-            bEndpointAddress=0x0 | standard.EndpointDescriptor.DIRECTION_OUT,
-            bmAttributes=standard.EndpointDescriptor.TYPE_BULK),
-        midi.DataEndpointDescriptor(baAssocJack=[midi_in_jack_emb]),
-        standard.EndpointDescriptor(
-            description="MIDI data in from CircuitPython",
-            bEndpointAddress=0x0 | standard.EndpointDescriptor.DIRECTION_IN,
-            bmAttributes=standard.EndpointDescriptor.TYPE_BULK,
-            bInterval = 0x0),
-        midi.DataEndpointDescriptor(baAssocJack=[midi_out_jack_emb]),
-    ])
-
-cs_ac_interface = audio10.AudioControlInterface(
-        description="Empty audio control",
-        audio_streaming_interfaces = [],
-        midi_streaming_interfaces = [
-            audio_midi_interface
-        ]
-    )
-
-audio_control_interface = standard.InterfaceDescriptor(
-        description="All the audio",
-        bInterfaceClass=audio.AUDIO_CLASS_DEVICE,
-        bInterfaceSubClass=audio.AUDIO_SUBCLASS_CONTROL,
-        bInterfaceProtocol=audio.AUDIO_PROTOCOL_V1,
-        iInterface=StringIndex.index("CircuitPython Audio"),
-        subdescriptors=[
-            cs_ac_interface,
-        ])
+#midi_in_jack_ext = midi.InJackDescriptor(
+#                    description="MIDI data in from user code.",
+#                    bJackType=midi.JACK_TYPE_EXTERNAL,
+#                    iJack=0)
+#midi_out_jack_emb = midi.OutJackDescriptor(
+#    description="MIDI PC <- CircuitPython",
+#    bJackType=midi.JACK_TYPE_EMBEDDED,
+#    input_pins=[(midi_in_jack_ext, 1)],
+#    iJack=StringIndex.index("CircuitPython usb_midi.ports[1]"))
+#
+#
+#audio_midi_interface = standard.InterfaceDescriptor(
+#    description="Midi goodness",
+#    bInterfaceClass=audio.AUDIO_CLASS_DEVICE,
+#    bInterfaceSubClass=audio.AUDIO_SUBCLASS_MIDI_STREAMING,
+#    bInterfaceProtocol=audio.AUDIO_PROTOCOL_V1,
+#    iInterface=StringIndex.index("CircuitPython MIDI"),
+#    subdescriptors=[
+#        midi.Header(
+#            jacks_and_elements=[
+#                midi_in_jack_emb,
+#                midi_in_jack_ext,
+#                midi_out_jack_emb,
+#                midi_out_jack_ext
+#            ],
+#        ),
+#        standard.EndpointDescriptor(
+#            description="MIDI data out to CircuitPython",
+#            bEndpointAddress=0x0 | standard.EndpointDescriptor.DIRECTION_OUT,
+#            bmAttributes=standard.EndpointDescriptor.TYPE_BULK),
+#        midi.DataEndpointDescriptor(baAssocJack=[midi_in_jack_emb]),
+#        standard.EndpointDescriptor(
+#            description="MIDI data in from CircuitPython",
+#            bEndpointAddress=0x0 | standard.EndpointDescriptor.DIRECTION_IN,
+#            bmAttributes=standard.EndpointDescriptor.TYPE_BULK,
+#            bInterval = 0x0),
+#        midi.DataEndpointDescriptor(baAssocJack=[midi_out_jack_emb]),
+#    ])
+#
+#cs_ac_interface = audio10.AudioControlInterface(
+#        description="Empty audio control",
+#        audio_streaming_interfaces = [],
+#        midi_streaming_interfaces = [
+#            audio_midi_interface
+#        ]
+#    )
+#
+#audio_control_interface = standard.InterfaceDescriptor(
+#        description="All the audio",
+#        bInterfaceClass=audio.AUDIO_CLASS_DEVICE,
+#        bInterfaceSubClass=audio.AUDIO_SUBCLASS_CONTROL,
+#        bInterfaceProtocol=audio.AUDIO_PROTOCOL_V1,
+#        iInterface=StringIndex.index("CircuitPython Audio"),
+#        subdescriptors=[
+#            cs_ac_interface,
+#        ])
 
 # Audio streaming interfaces must occur before MIDI ones.
-audio_interfaces = [audio_control_interface] + cs_ac_interface.audio_streaming_interfaces + cs_ac_interface.midi_streaming_interfaces
+#audio_interfaces = [audio_control_interface] + cs_ac_interface.audio_streaming_interfaces + cs_ac_interface.midi_streaming_interfaces
 
 # This will renumber the endpoints to make them unique across descriptors,
 # and renumber the interfaces in order. But we still need to fix up certain
 # interface cross-references.
-interfaces = util.join_interfaces(cdc_interfaces, msc_interfaces, hid_interfaces, audio_interfaces)
+interfaces = util.join_interfaces(cdc_interfaces, msc_interfaces) #, hid_interfaces, audio_interfaces
 
 # Now adjust the CDC interface cross-references.
 
@@ -276,14 +276,14 @@ descriptor_list.extend(cdc_interfaces)
 descriptor_list.extend(msc_interfaces)
 # Only add the control interface because other audio interfaces are managed by it to ensure the
 # correct ordering.
-descriptor_list.append(audio_control_interface)
+#descriptor_list.append(audio_control_interface)
 # Put the CDC IAD just before the CDC interfaces.
 # There appears to be a bug in the Windows composite USB driver that requests the
 # HID report descriptor with the wrong interface number if the HID interface is not given
 # first. However, it still fetches the descriptor anyway. We could reorder the interfaces but
 # the Windows 7 Adafruit_usbser.inf file thinks CDC is at Interface 0, so we'll leave it
 # there for backwards compatibility.
-descriptor_list.extend(hid_interfaces)
+#descriptor_list.extend(hid_interfaces)
 
 configuration = standard.ConfigurationDescriptor(
     description="Composite configuration",
@@ -420,7 +420,7 @@ const uint8_t usb_desc_cfg[{configuration_length}];
 uint16_t usb_serial_number[{serial_number_length}];
 uint16_t const * const string_desc_arr [{string_descriptor_length}];
 
-const uint8_t hid_report_descriptor[{HID_REPORT_DESCRIPTOR_LENGTH}];
+//const uint8_t hid_report_descriptor[{HID_REPORT_DESCRIPTOR_LENGTH}];
 
 // Vendor name included in Inquiry response, max 8 bytes
 #define CFG_TUD_MSC_VENDOR          "{msc_vendor}"
@@ -465,15 +465,15 @@ h_file.write("""\
 
 
 # Write out the report descriptor and info
-c_file.write("""\
-const uint8_t hid_report_descriptor[{HID_DESCRIPTOR_LENGTH}] = {{
-""".format(HID_DESCRIPTOR_LENGTH=hid_descriptor_length))
-
-for b in bytes(combined_hid_report_descriptor):
-    c_file.write("0x{:02x}, ".format(b))
-c_file.write("""
-};
-""")
+#c_file.write("""\
+#const uint8_t hid_report_descriptor[{HID_DESCRIPTOR_LENGTH}] = {{
+#""".format(HID_DESCRIPTOR_LENGTH=hid_descriptor_length))
+#
+#for b in bytes(combined_hid_report_descriptor):
+#    c_file.write("0x{:02x}, ".format(b))
+#c_file.write("""
+#};
+#""")
 
 h_file.write("""\
 #endif // MICROPY_INCLUDED_AUTOGEN_USB_DESCRIPTOR_H

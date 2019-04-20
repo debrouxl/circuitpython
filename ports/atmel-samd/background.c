@@ -57,7 +57,7 @@ void run_background_tasks(void) {
     running_background_tasks = true;
 
     #if (defined(SAMD21) && defined(PIN_PA02)) || defined(SAMD51)
-    audio_dma_background();
+    //audio_dma_background();
     #endif
     #if CIRCUITPY_DISPLAYIO
     displayio_refresh_displays();

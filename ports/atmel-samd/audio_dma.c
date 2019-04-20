@@ -213,7 +213,7 @@ audio_dma_result audio_dma_setup_playback(audio_dma_t* dma,
         // We keep the audio_dma_t for internal use and the sample as a root pointer because it
         // contains the audiodma structure.
         audio_dma_state[dma->dma_channel] = dma;
-        MP_STATE_PORT(playing_audio)[dma->dma_channel] = dma->sample;
+        //MP_STATE_PORT(playing_audio)[dma->dma_channel] = dma->sample;
     }
 
 
@@ -260,7 +260,7 @@ audio_dma_result audio_dma_setup_playback(audio_dma_t* dma,
 void audio_dma_stop(audio_dma_t* dma) {
     dma_disable_channel(dma->dma_channel);
     disable_event_channel(dma->event_channel);
-    MP_STATE_PORT(playing_audio)[dma->dma_channel] = NULL;
+    //MP_STATE_PORT(playing_audio)[dma->dma_channel] = NULL;
 
     dma->dma_channel = AUDIO_DMA_CHANNEL_COUNT;
 }
@@ -292,7 +292,7 @@ void audio_dma_reset(void) {
         audio_dma_pending[i] = false;
         dma_disable_channel(i);
         dma_descriptor(i)->BTCTRL.bit.VALID = false;
-        MP_STATE_PORT(playing_audio)[i] = NULL;
+        //MP_STATE_PORT(playing_audio)[i] = NULL;
     }
 }
 

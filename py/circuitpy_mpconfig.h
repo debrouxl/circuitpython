@@ -37,7 +37,7 @@
 #define CIRCUITPY 1
 
 // REPR_C encodes qstrs, 31-bit ints, and 30-bit floats in a single 32-bit word.
-#define MICROPY_OBJ_REPR            (MICROPY_OBJ_REPR_C)
+#define MICROPY_OBJ_REPR            (MICROPY_OBJ_REPR_A)
 
 // options to control how MicroPython is built
 // TODO(tannewt): Reduce this number if we want the REPL to function under 512
@@ -64,8 +64,8 @@
 #define MICROPY_ENABLE_GC                (1)
 #define MICROPY_ENABLE_SOURCE_LINE       (1)
 #define MICROPY_ERROR_REPORTING          (MICROPY_ERROR_REPORTING_NORMAL)
-#define MICROPY_FLOAT_HIGH_QUALITY_HASH  (0)
-#define MICROPY_FLOAT_IMPL               (MICROPY_FLOAT_IMPL_FLOAT)
+#define MICROPY_FLOAT_HIGH_QUALITY_HASH  (1)
+#define MICROPY_FLOAT_IMPL               (MICROPY_FLOAT_IMPL_DOUBLE)
 #define MICROPY_GC_ALLOC_THRESHOLD       (0)
 #define MICROPY_HELPER_LEXER_UNIX        (0)
 #define MICROPY_HELPER_REPL              (1)
@@ -82,6 +82,7 @@
 #define MICROPY_PY_BUILTINS_BYTEARRAY    (1)
 #define MICROPY_PY_BUILTINS_ENUMERATE    (1)
 #define MICROPY_PY_BUILTINS_FILTER       (1)
+#define MICROPY_PY_BUILTINS_FLOAT        (1)
 #define MICROPY_PY_BUILTINS_HELP         (1)
 #define MICROPY_PY_BUILTINS_HELP_MODULES (1)
 #define MICROPY_PY_BUILTINS_INPUT        (1)
@@ -94,13 +95,14 @@
 #define MICROPY_PY_BUILTINS_SLICE_ATTRS  (1)
 #define MICROPY_PY_BUILTINS_STR_UNICODE  (1)
 
-#define MICROPY_PY_CMATH                 (0)
+#define MICROPY_PY_CMATH                 (1)
 #define MICROPY_PY_COLLECTIONS           (1)
 #define MICROPY_PY_DESCRIPTORS           (1)
 #define MICROPY_PY_IO_FILEIO             (1)
 #define MICROPY_PY_GC                    (1)
 // Supplanted by shared-bindings/math
 #define MICROPY_PY_MATH                  (0)
+#define MICROPY_PY_MATH_SPECIAL_FUNCTIONS (1)
 #define MICROPY_PY_MICROPYTHON_MEM_INFO  (0)
 // Supplanted by shared-bindings/struct
 #define MICROPY_PY_STRUCT                (0)
@@ -181,9 +183,9 @@ typedef long mp_off_t;
 #define MICROPY_CPYTHON_COMPAT                (CIRCUITPY_FULL_BUILD)
 #define MICROPY_MODULE_WEAK_LINKS             (CIRCUITPY_FULL_BUILD)
 #define MICROPY_PY_ALL_SPECIAL_METHODS        (CIRCUITPY_FULL_BUILD)
-#define MICROPY_PY_BUILTINS_COMPLEX           (CIRCUITPY_FULL_BUILD)
+#define MICROPY_PY_BUILTINS_COMPLEX           (1)
 #define MICROPY_PY_BUILTINS_FROZENSET         (CIRCUITPY_FULL_BUILD)
-#define MICROPY_PY_BUILTINS_STR_CENTER        (CIRCUITPY_FULL_BUILD)
+#define MICROPY_PY_BUILTINS_STR_CENTER        (1)
 #define MICROPY_PY_BUILTINS_STR_PARTITION     (CIRCUITPY_FULL_BUILD)
 #define MICROPY_PY_BUILTINS_STR_SPLITLINES    (CIRCUITPY_FULL_BUILD)
 #define MICROPY_PY_UERRNO                     (CIRCUITPY_FULL_BUILD)
@@ -209,6 +211,8 @@ typedef long mp_off_t;
 #define MICROPY_LONGINT_IMPL (MICROPY_LONGINT_IMPL_LONGLONG)
 #define MP_SSIZE_MAX (0x7fffffff)
 #endif
+
+#define MP_NEED_LOG2 (1)
 
 
 // These CIRCUITPY_xxx values should all be defined in the *.mk files as being on or off.
@@ -278,17 +282,17 @@ extern const struct _mp_obj_module_t board_module;
 #endif
 
 #if CIRCUITPY_BUSIO
+#define BUSIO_MODULE
+#else
 extern const struct _mp_obj_module_t busio_module;
 #define BUSIO_MODULE           { MP_OBJ_NEW_QSTR(MP_QSTR_busio), (mp_obj_t)&busio_module },
-#else
-#define BUSIO_MODULE
 #endif
 
 #if CIRCUITPY_DIGITALIO
+#define DIGITALIO_MODULE
+#else
 extern const struct _mp_obj_module_t digitalio_module;
 #define DIGITALIO_MODULE       { MP_OBJ_NEW_QSTR(MP_QSTR_digitalio), (mp_obj_t)&digitalio_module },
-#else
-#define DIGITALIO_MODULE
 #endif
 
 #if CIRCUITPY_DISPLAYIO
@@ -350,10 +354,10 @@ extern const struct _mp_obj_module_t math_module;
 #endif
 
 #if CIRCUITPY_MICROCONTROLLER
+#define MICROCONTROLLER_MODULE
+#else
 extern const struct _mp_obj_module_t microcontroller_module;
 #define MICROCONTROLLER_MODULE { MP_OBJ_NEW_QSTR(MP_QSTR_microcontroller), (mp_obj_t)&microcontroller_module },
-#else
-#define MICROCONTROLLER_MODULE
 #endif
 
 #if CIRCUITPY_NEOPIXEL_WRITE
@@ -618,9 +622,6 @@ extern const struct _mp_obj_module_t ustack_module;
     const char *readline_hist[8]; \
     vstr_t *repl_line; \
     mp_obj_t rtc_time_source; \
-    GAMEPAD_ROOT_POINTERS \
-    mp_obj_t pew_singleton; \
-    mp_obj_t terminal_tilegrid_tiles; \
     BOARD_I2C_ROOT_POINTER \
     BOARD_UART_ROOT_POINTER \
     FLASH_ROOT_POINTERS \

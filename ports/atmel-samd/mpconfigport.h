@@ -32,7 +32,7 @@
 
 #ifdef SAMD21
 #define CIRCUITPY_MCU_FAMILY                        samd21
-#define MICROPY_PY_SYS_PLATFORM                     "Atmel SAMD21"
+#define MICROPY_PY_SYS_PLATFORM                     "TI-Python Adapter"
 #define SPI_FLASH_MAX_BAUDRATE 8000000
 #define CIRCUITPY_DEFAULT_STACK_SIZE                4096
 #define MICROPY_PY_BUILTINS_NOTIMPLEMENTED          (0)
@@ -79,7 +79,6 @@
 #include "py/circuitpy_mpconfig.h"
 
 #define MICROPY_PORT_ROOT_POINTERS \
-    CIRCUITPY_COMMON_ROOT_POINTERS \
-    mp_obj_t playing_audio[AUDIO_DMA_CHANNEL_COUNT];
+    CIRCUITPY_COMMON_ROOT_POINTERS;
 
 #endif  // __INCLUDED_MPCONFIGPORT_H

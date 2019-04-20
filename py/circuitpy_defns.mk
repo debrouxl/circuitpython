@@ -28,13 +28,11 @@
 # Common compile warnings.
 
 BASE_CFLAGS = \
-	-fsingle-precision-constant \
 	-fno-strict-aliasing \
 	-Wdouble-promotion \
 	-Wno-endif-labels \
 	-Wstrict-prototypes \
 	-Werror-implicit-function-declaration \
-	-Wfloat-equal \
 	-Wundef \
 	-Wshadow \
 	-Wwrite-strings \
@@ -118,7 +116,7 @@ ifeq ($(CIRCUITPY_BOARD),1)
 SRC_PATTERNS += board/%
 endif
 ifeq ($(CIRCUITPY_BUSIO),1)
-SRC_PATTERNS += busio/% bitbangio/OneWire.%
+SRC_PATTERNS += busio/%
 endif
 ifeq ($(CIRCUITPY_DIGITALIO),1)
 SRC_PATTERNS += digitalio/%
@@ -268,9 +266,6 @@ $(filter $(SRC_PATTERNS), \
 # All possible sources are listed here, and are filtered by SRC_PATTERNS.
 SRC_BINDINGS_ENUMS = \
 $(filter $(SRC_PATTERNS), \
-	digitalio/Direction.c \
-	digitalio/DriveMode.c \
-	digitalio/Pull.c \
 	fontio/Glyph.c \
 	microcontroller/RunMode.c \
 	math/__init__.c \
@@ -306,7 +301,6 @@ $(filter $(SRC_PATTERNS), \
 	bitbangio/SPI.c \
 	bitbangio/__init__.c \
 	board/__init__.c \
-	busio/OneWire.c \
 	displayio/Bitmap.c \
 	displayio/ColorConverter.c \
 	displayio/Display.c \
@@ -340,24 +334,43 @@ $(filter $(SRC_PATTERNS), \
 ifeq ($(INTERNAL_LIBM),1)
 SRC_LIBM = \
 $(addprefix lib/,\
-	libm/math.c \
-	libm/roundf.c \
-	libm/fmodf.c \
-	libm/nearbyintf.c \
-	libm/ef_sqrt.c \
-	libm/kf_rem_pio2.c \
-	libm/kf_sin.c \
-	libm/kf_cos.c \
-	libm/kf_tan.c \
-	libm/ef_rem_pio2.c \
-	libm/sf_sin.c \
-	libm/sf_cos.c \
-	libm/sf_tan.c \
-	libm/sf_frexp.c \
-	libm/sf_modf.c \
-	libm/sf_ldexp.c \
-	libm/asinfacosf.c \
-	libm/atanf.c \
-	libm/atan2f.c \
+	libm_dbl/fmod.c \
+	libm_dbl/nearbyint.c \
+	libm_dbl/sqrt.c \
+	libm_dbl/__rem_pio2.c \
+	libm_dbl/__rem_pio2_large.c \
+	libm_dbl/sin.c \
+	libm_dbl/sinh.c \
+	libm_dbl/__sin.c \
+	libm_dbl/cos.c \
+	libm_dbl/cosh.c \
+	libm_dbl/__cos.c \
+	libm_dbl/tan.c \
+	libm_dbl/tanh.c \
+	libm_dbl/__tan.c \
+	libm_dbl/frexp.c \
+	libm_dbl/modf.c \
+	libm_dbl/ldexp.c \
+	libm_dbl/asin.c \
+	libm_dbl/asinh.c \
+	libm_dbl/acos.c \
+	libm_dbl/acosh.c \
+	libm_dbl/atanh.c \
+	libm_dbl/atan.c \
+	libm_dbl/atan2.c \
+	libm_dbl/log.c \
+	libm_dbl/log10.c \
+	libm_dbl/log1p.c \
+	libm_dbl/trunc.c \
+	libm_dbl/floor.c \
+	libm_dbl/ceil.c \
+	libm_dbl/exp.c \
+	libm_dbl/pow.c \
+	libm_dbl/rint.c \
+	libm_dbl/expm1.c \
+	libm_dbl/__expo2.c \
+	libm_dbl/lgamma.c \
+	libm_dbl/tgamma.c \
+	libm_dbl/erf.c \
 	)
 endif

@@ -37,10 +37,10 @@ tud_desc_set_t tud_desc_set =
     .string_arr   = (uint8_t const **) string_desc_arr,
     .string_count = sizeof(string_desc_arr)/sizeof(string_desc_arr[0]),
 
-    .hid_report =
+    /*.hid_report =
     {
         .generic       = hid_report_descriptor,
         .boot_keyboard = NULL,
         .boot_mouse    = NULL
-    }
+    }*/
 };
